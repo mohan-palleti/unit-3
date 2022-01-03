@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Menu</title>
+    <link rel="stylesheet" href="menu.css" />
+    <!-- <script src="menu.js"></script> -->
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <button onclick="get()">Go to Cart</button>
+        <div>
+          <p>Items In Cart</p>
+          <p id="cart_items">0</p>
+        </div>
+      </div>
+      <div class="body"></div>
+    </div>
+  </body>
+</html>
+<script>
+  let url = "https://www.themealdb.com/api/json/v1/1/categories.php";
+  let data;
+  let arr = JSON.parse(localStorage.getItem("foodcart")) || [];
+  let count = document.querySelector("#cart_items");
+
+  async function getdata() {
+    try {
+      let res = await fetch(url);
+      data = await res.json();
+      console.log(data);
+      displaydata(data);
+    } catch (err) {
+      console.log(err);
+    }
+  }
+  getdata();
+
+  function get() {
+    window.location.href = "cart.html";
+  }
+  function displaydata(data) {
+    data.categories.forEach((element, index) => {
+      let div = document.createElement("div");
+      let button = document.createElement("button");
+      button.addEventListener("click", function () {
+        gotocart(index);
+      });
+      element.price = Math.floor(Math.random(5) * 500);
+      button.innerHTML = "Add To Cart";
+      let p = document.createElement("p");
+      p.innerHTML = `<b>Price:</b> ${element.price}`;
+      let img = document.createElement("img");
+      img.src = element.strCategoryThumb;
+      div.append(img, p, button);
+      document.querySelector(".body").append(div);
+    });
+  }
+  function gotocart(index) {
+    arr.push(data.categories[index]);
+    document.getElementById("cart_items").innerHTML = arr.length;
+    localStorage.setItem("foodcart", JSON.stringify(arr));
+  }
+</script>

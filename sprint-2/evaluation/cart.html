@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cart</title>
+    <link rel="stylesheet" href="cart.css" />
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <button onclick="get()">Checkout</button>
+        <div>
+          <p>Items In Cart</p>
+          <p id="cart_items">0</p>
+        </div>
+        <div>
+          <p>Total Price</p>
+          <p id="Price">0</p>
+        </div>
+      </div>
+      <div class="body"></div>
+    </div>
+  </body>
+</html>
+<script>
+  let arr = JSON.parse(localStorage.getItem("foodcart")) || [];
+  let count = document.querySelector("#cart_items");
+  let x = arr.length;
+
+  count.textContent = x;
+
+  displaydata(arr);
+  function displaydata(data) {
+    document.querySelector(".body").innerHTML = "";
+    data.forEach((element, index) => {
+      let div = document.createElement("div");
+      let img = document.createElement("img");
+      let p = document.createElement("p");
+      p.innerHTML = `Price:${element.price}`;
+      let button = document.createElement("button");
+      button.addEventListener("click", function () {
+        removeitem(index);
+      });
+      button.innerHTML = "Remove";
+      img.src = element.strCategoryThumb;
+      div.append(img, p, button);
+      document.querySelector(".body").append(div);
+    });
+    let x = 0;
+    data.forEach((element) => {
+      x += element.price;
+    });
+    document.querySelector("#Price").innerHTML = x;
+
+    document.querySelector("#cart_items").innerHTML = arr.length;
+  }
+  function get() {
+    window.location.href = "checkout.html";
+  }
+  function removeitem(index) {
+    arr.splice(index, 1);
+    localStorage.setItem("foodcart", JSON.stringify(arr));
+    displaydata(arr);
+  }
+</script>
